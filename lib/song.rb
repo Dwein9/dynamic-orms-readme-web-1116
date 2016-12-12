@@ -3,7 +3,6 @@ require 'active_support/inflector'
 
 class Song
 
-
   def self.table_name
     self.to_s.downcase.pluralize
   end
@@ -14,11 +13,7 @@ class Song
     sql = "pragma table_info('#{table_name}')"
 
     table_info = DB[:conn].execute(sql)
-    column_names = []
-    table_info.each do |row|
-      column_names << row["name"]
-    end
-    column_names.compact
+    table_info.collect {|row| row["name"] }.compact
   end
 
   self.column_names.each do |col_name|
@@ -42,12 +37,9 @@ class Song
   end
 
   def values_for_insert
-    values = []
-    self.class.column_names.each do |col_name|
-      values << "'#{send(col_name)}'" unless send(col_name).nil?
-    end
-    values.join(", ")
+    col_names_for_insert.split(", ").collect { |col_name| "'#{send(col_name)}'" unless send(col_name).nil? }.join(", ")
   end
+
 
   def col_names_for_insert
     self.class.column_names.delete_if {|col| col == "id"}.join(", ")
@@ -59,6 +51,3 @@ class Song
   end
 
 end
-
-
-
