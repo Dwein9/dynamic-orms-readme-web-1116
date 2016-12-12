@@ -12,6 +12,7 @@ song.save
 song1 = Song.new(name: "Supersonic", album: "Definitely, Maybe")
 song1.save
 
-p Song.find_by_name("Supersonic")
+# p Song.find_by_name("Supersonic")
 
+p Song.all
 DB[:conn].execute("SELECT * FROM songs")
